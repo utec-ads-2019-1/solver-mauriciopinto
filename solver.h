@@ -6,12 +6,14 @@
 #define SOLVER_SOLVER_H
 #include<iostream>
 #include"nodes/node.h"
+#include<stdlib.h>
 class solver{
 public:
     node* root;
     string equation;
 
     solver(string equation) : root(nullptr), equation(equation){
+        equation = fixOperators(equation);
         if(find('+', equation)){
             create('+', equation);
             return;
@@ -37,6 +39,7 @@ public:
            root = number1;
         }
     };
+
     bool find(char data, string equation){
         bool found = false;
         int i = 0;
@@ -51,6 +54,7 @@ public:
         cout << " " << data << " found in " <<  equation << " " << found << endl;
         return found;
     }
+
     void create(char data, string equation) {
         cout << "creating solver for" << data << endl;
         bool found = false;
@@ -85,6 +89,45 @@ public:
         else{
             return;
         }
+    }
+    string fixOperators(string equation) {
+        cout << "fixing " << equation << endl;
+        int i = 0;
+        string newEquation;
+        while(i < equation.size()-1){
+            if(equation[i] == '+'){
+                if(equation[i+1] == '+'){
+                    newEquation.push_back('+');
+                    i++;
+                }
+                else if(equation[i+1] == '-'){
+                    newEquation.push_back('-');
+                    i++;
+                }
+                else{
+                    newEquation.push_back(equation[i]);
+                }
+            }
+            else if(equation[i] == '-'){
+                if(equation[i+1] == '+'){
+                    newEquation.push_back('-');
+                    i++;
+                }
+                else if(equation[i+1] == '-'){
+                    newEquation.push_back('+');
+                    i++;
+                }
+                else{
+                    newEquation.push_back(equation[i]);
+                }
+            }
+            else{
+                newEquation.push_back(equation[i]);
+            }
+            i++;
+        }
+        newEquation.push_back(equation[equation.size()-1]);
+        return newEquation;
     }
     double solve(){
             return root->operate();
