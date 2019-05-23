@@ -48,15 +48,5 @@ public:
         }
         return result;
     }
-
-    bool checkDouble(string data){
-        double testDouble;
-        if(typeid(data).name() == typeid(testDouble).name()){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
 };
 #endif //SOLVER_NODE_H
