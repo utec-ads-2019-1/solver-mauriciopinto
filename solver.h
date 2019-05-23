@@ -16,7 +16,6 @@ public:
         if(!isFixed(equation)) {
             equation = fixOperators(equation);
         }
-        cout << equation << endl;
         if(find('+', equation)){
             create('+', equation);
             return;
