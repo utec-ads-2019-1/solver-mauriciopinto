@@ -13,7 +13,10 @@ public:
     string equation;
 
     solver(string equation) : root(nullptr), equation(equation){
-        equation = fixOperators(equation);
+        if(!isFixed(equation)) {
+            equation = fixOperators(equation);
+        }
+        cout << equation << endl;
         if(find('+', equation)){
             create('+', equation);
             return;
@@ -51,21 +54,18 @@ public:
                 i++;
             }
         }
-        cout << " " << data << " found in " <<  equation << " " << found << endl;
         return found;
     }
 
     void create(char data, string equation) {
-        cout << "creating solver for" << data << endl;
         bool found = false;
-        bool created = false;
-        int i = 0;
-        while (i < equation.size()) {
+        int i = equation.size()-1;
+        while (i >= 0) {
             if (equation[i] == data) {
                 found = true;
                 break;
             } else {
-                i++;
+                i--;
             }
         }
         if(found) {
@@ -84,50 +84,60 @@ public:
             }
             op1->left = solver(section1).root;
             op1->right = solver(section2).root;
-            created = true;
         }
         else{
             return;
         }
     }
     string fixOperators(string equation) {
-        cout << "fixing " << equation << endl;
-        int i = 0;
         string newEquation;
-        while(i < equation.size()-1){
-            if(equation[i] == '+'){
-                if(equation[i+1] == '+'){
-                    newEquation.push_back('+');
-                    i++;
-                }
-                else if(equation[i+1] == '-'){
-                    newEquation.push_back('-');
-                    i++;
-                }
-                else{
-                    newEquation.push_back(equation[i]);
-                }
-            }
-            else if(equation[i] == '-'){
-                if(equation[i+1] == '+'){
-                    newEquation.push_back('-');
-                    i++;
-                }
-                else if(equation[i+1] == '-'){
-                    newEquation.push_back('+');
-                    i++;
+        int i = 0;
+        while(equation[i] != '+' && equation[i] != '-'){
+            newEquation.push_back(equation[i]);
+            i++;
+        }
+        newEquation.push_back(equation[i]);
+        int j = i + 1;
+        while(equation[j] == '+' || equation[j] == '-'){
+            if(newEquation[i] == '+'){
+                if(equation[j] == '+'){
+                    newEquation[i] = '+';
                 }
                 else{
-                    newEquation.push_back(equation[i]);
+                    newEquation[i] = '-';
                 }
             }
             else{
-                newEquation.push_back(equation[i]);
+                if(equation[j] == '+'){
+                    newEquation[i] = '-';
+                }
+                else{
+                    newEquation[i] = '+';
+                }
             }
-            i++;
+            j++;
         }
-        newEquation.push_back(equation[equation.size()-1]);
+        string newEquation2;
+        for(j; j < equation.size(); j++) {
+            newEquation2.push_back(equation[j]);
+        }
+        if(!isFixed(newEquation2)){
+            newEquation2 = fixOperators(newEquation2);
+        }
+        newEquation += newEquation2;
         return newEquation;
+    }
+
+    bool isFixed(string equation){
+        for(int i = 0; i < equation.size() -1; i++){
+            if(equation[i] == '+' || equation[i] == '-'){
+                if(equation[i+1] == '+' || equation[i+1] == '-') {
+                    return false;
+                }
+                else{
+                }
+            }
+        }
     }
     double solve(){
             return root->operate();
