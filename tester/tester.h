@@ -7,7 +7,6 @@
 #include <string.h>
 
 #include "../operations/operation.h"
-
 using namespace std;
 
 #ifndef NDEBUG
